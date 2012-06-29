@@ -1,0 +1,20 @@
+{
+  // "manifest_version": 2,
+  "name": "Split Search",
+  "version": "1.0",
+  "description": "Splittttt.",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.co.jp/*",
+        "http://www.google.co.jp/*"
+      ],
+      "js": ["contentscript.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
+
