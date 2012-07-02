@@ -12,9 +12,12 @@
         "https://www.google.co.jp/*",
         "http://www.google.co.jp/*"
       ],
-      "js": ["contentscript.js"],
-      "run_at": "document_start"
+      "js": ["frameWindow.js", "contentscript.js", "injectedscript.js"],
+      "run_at": "document_idle"
     }
+  ],
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*"
   ]
 }
 
