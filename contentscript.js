@@ -44,10 +44,13 @@ function setSplitLink(doc) {
         var splitLink = doc.createElement("a");
         var icon = doc.createElement("img");
 
-        icon.src = chrome.extension.getURL("icon.png");
-        icon.style.width = "20px";
-        icon.style.marginRight = "3px";
-        icon.style.marginBottom = "-1px";
+        icon.src = chrome.extension.getURL("icon15x11.png");
+        // icon.style.width = "20px";
+        // icon.style.marginRight = "3px";
+        // icon.style.marginBottom = "-2px";
+        icon.style.width = "15px";
+        icon.style.marginBottom = "0px";
+        icon.style.marginRight = "5px";
         splitLink.href = link.href;
         splitLink.appendChild(icon);
         splitLink.className = "splitLink";
