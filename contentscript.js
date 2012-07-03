@@ -5,76 +5,25 @@
 var ssObj = {
     isDomChanged: false,
     numOfChanged: 0,
-    NUM_OF_LINK: 10
+    NUM_OF_LINK: 10,
+    isMainWindowShowed: true
 };
 
 // window.onload = function() {
 (function() {
   
     console.log("onLoad");
-
-    var rs = document.getElementsByClassName("r");
-    console.log("rs = ", rs);
-    for (i = 0; i < rs.length; i++) {
-        var r = rs[i];
-        var link = r.childNodes[0];
-        var splitLink = document.createElement("a");
-        var icon = document.createElement("img");
-
-        icon.src = chrome.extension.getURL("icon.png");
-        icon.style.width = "20px";
-        icon.style.marginRight = "5px";
-        splitLink.href = link.href;
-        splitLink.appendChild(icon);
-        splitLink.className = "splitLink";
-
-        setSplitLink(splitLink);
-
-        r.appendChild(splitLink);
-        r.appendChild(link);
-    }
-
+    
+    setSplitLink(window.document);
     fw.initFrameWindow();
+    mw.observeDocument();
+
     /*
-    // framesetに入ったページ
-    var div = document.createElement("div");
-    // div.style.display = "none";
-    div.id = "targetDiv";
-
-    var frameSet = document.createElement("frameset");
-    // // これが効かない
-    // frameSet.style.display = "none";
-    // frameSet.frameBorder = 0;
-    frameSet.cols = "*,*";
-    frameSet.setAttribute("frameborder", "0");
-    frameSet.setAttribute("border", "0");
-    frameSet.setAttribute("framespacing", "0");
-
-    var searchResultsFrame = document.createElement("frame");
-    searchResultsFrame.id = "searchResultsFrame";
-    searchResultsFrame.src = location.href;
-
-    var pageFrame = document.createElement("frame");
-    pageFrame.name = "pageFrame";
-    pageFrame.id = "pageFrame";
-
-    frameSet.appendChild(searchResultsFrame);
-    frameSet.appendChild(pageFrame);
-    div.appendChild(frameSet);
-    document.body.appendChild(div);
-    */
-
     var script = "var searchResultsFrame = document.getElementById('searchResultsFrame');" + 
                  "searchResultsFrame.contentWindow.onload = function() {console.log('frame loaded');};";
     injectScript(script);
+    */
 
-    console.log(searchResultsFrame.contentDocument);
-    var observerConfig = {
-        attributes: false,
-        childList: true,
-        characterData: true,
-        subtree: true
-    };
 
 })();
 // }
@@ -86,6 +35,37 @@ function executeCodeInPage(executedCode) {
     chrome.extension.sendMessage({code: executedCode});
 }
 
+function setSplitLink(doc) {
+    var rs = doc.getElementsByClassName("r");
+    console.log("rs = ", rs);
+    for (i = 0; i < rs.length; i++) {
+        var r = rs[i];
+        var link = r.childNodes[0];
+        var splitLink = doc.createElement("a");
+        var icon = doc.createElement("img");
+
+        icon.src = chrome.extension.getURL("icon.png");
+        icon.style.width = "20px";
+        icon.style.marginRight = "3px";
+        icon.style.marginBottom = "-1px";
+        splitLink.href = link.href;
+        splitLink.appendChild(icon);
+        splitLink.className = "splitLink";
+        splitLink.target = "pageFrame";
+        splitLink.addEventListener("click", function() {
+            if (ssObj.isMainWindowShowed) {
+                mw.changeWindow();
+            }
+        });
+
+        // setSplitLink(splitLink);
+
+        r.appendChild(splitLink);
+        r.appendChild(link);
+    }
+}
+
+/*
 function setSplitLink(link) {
 
     link.target = "pageFrame";
@@ -156,6 +136,7 @@ function setSplitLink(link) {
         fieldset.style.width = "300px";
     }, false);
 }
+*/
 
 var dx;
 function clickSlideLeftButton(e) {
@@ -183,7 +164,6 @@ function injectScript(script) {
   var scriptElem = document.createElement("script");
   scriptElem.innerHTML = script;
   document.head.appendChild(scriptElem);
-
 }
 
 function domChanged() {
@@ -234,6 +214,54 @@ function getCurrent() {
     return location.href;
 }
 
+function observerCallback(windowObj) {
+
+    for (var i = 0, l = mutations.length; i < l; i++) {
+        var mutation = mutations[i];
+        if (mutation.addedNodes) {
+            for (var j = 0, l2 = mutation.addedNodes.length; j < l2; j++) {
+                var node = mutation.addedNodes[j];
+                if (node instanceof HTMLLIElement) {
+                    windowObj.numOfChanged++;
+                    // 10個以上の検索結果が1つのページに表示された場合に調整
+                    var numOfSearchResults = windowObj.getDocument().getElementsByClassName("g").length;
+                    numOfSearchResults = (windowObj.NUM_OF_LINK > numOfSearchResults) ? windowObj.NUM_OF_LINK : numOfSearchResults;
+                    if (windowObj.numOfChanged == numOfSearchResults) {
+                        windowObj.domChanged();
+                    }
+                }
+            }
+        }
+    }
+}
+
+function showMainWindow() {
+    var doc = mw.getDocument();
+    // mainWindowを表示
+    for (var i = 0; i < doc.body.childNodes.length; i++) {
+        if (doc.body.childNodes[i].style) {
+            doc.body.childNodes[i].style.display = "block";
+        }
+    }
+}
+
+function hideMainWindow() {
+    var doc = mw.getDocument();
+    // mainWindowを非表示
+    for (var i = 0; i < doc.body.childNodes.length; i++) {
+        if (doc.body.childNodes[i].style) {
+            doc.body.childNodes[i].style.display = "none";
+        }
+    }
+}
+
+function hideFrameWindow() {
+    var framesetDiv = document.getElementById("framesetDiv");
+    framesetDiv.style.display = "none";
+}
+
+
+/*
 var observer = new WebKitMutationObserver(function(mutations) {
     // console.log(mutations);
     
@@ -265,3 +293,4 @@ var observerConfig = {
 };
 
 observer.observe(document, observerConfig);
+*/
