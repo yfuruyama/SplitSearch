@@ -40,28 +40,6 @@ var ssObj = {
             r.appendChild(splitLink);
             r.appendChild(link);
         }
-        /*
-        var button = doc.createElement("button");
-        button.id = "leftSlideButton";
-        button.style.position = "absolute";
-        button.style.top = (document.body.scrollHeight/2) + "px";
-        console.log("width = " + searchResultsFrame.width);
-        button.style.left = (searchResultsFrame.width - 30) + "px";
-        // button.style.left = "300px";
-        button.innerHTML = "←";
-        button.addEventListener("click", function(e) {
-          clickSlideLeftButton(e);
-          doc.body.removeChild(button);
-        }, false);
-        doc.body.appendChild(button);
-
-        var colScrollScript = "var searchResultsFrame = document.getElementById('searchResultsFrame');" + 
-                              "searchResultsFrame.contentWindow.onscroll = function() {" +
-                                "var doc = searchResultsFrame.contentDocument;" +
-                                "doc.getElementById('leftSlideButton').style.top = doc.body.scrollTop;" + 
-                              "};";
-        injectScript(colScrollScript);
-        */
     },
 
     observeDocument: function() {
@@ -105,36 +83,13 @@ var ssObj = {
         var scriptElem = document.createElement("script");
         scriptElem.innerHTML = script;
         document.head.appendChild(scriptElem);
+    },
+
+    executeCodeInPage: function(executedCode) {
+        chrome.extension.sendMessage({code: executedCode});
     }
 
 }
 
 ssObj.init();
 
-
-// release ver2.0
-var dx;
-function clickSlideLeftButton(e) {
-  console.log("slide: ", e);
-  console.log(this);
-  var frameset = document.getElementsByTagName("frameset")[0];
-  dx = 0;
-  startSlide(frameset, document.body.scrollWidth/2);
-}
-
-function startSlide(frameset, leftPosition) {
-  slideTimer = setInterval(function() {
-    if (leftPosition - dx <= 0) {
-      dx = 0;
-      frameset.cols = "0,*";
-      clearInterval(slideTimer);
-      return;
-    }
-    frameset.cols = (leftPosition - dx) + ",*";
-    dx += 50;
-  }, 30);
-}
-
-function executeCodeInPage(executedCode) {
-    chrome.extension.sendMessage({code: executedCode});
-}

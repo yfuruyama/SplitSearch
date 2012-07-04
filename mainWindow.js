@@ -35,7 +35,6 @@ var mw = {
         ssObj.setSplitLink(fw.getDocument());
         ssObj.observeDocument();
 
-        // returnMWLink
         fw.setReturnMWLink();
     },
     

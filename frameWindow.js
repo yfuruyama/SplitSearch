@@ -54,29 +54,12 @@ var fw = {
         var leftnavc = doc.getElementById("leftnavc");
         var center_col = doc.getElementById("center_col");
         var foot = doc.getElementById("foot");
-        // console.log(leftnavc);
-        // console.log(center_col);
         leftnavc.style.display = "none";
         center_col.style.marginLeft = "20px";
         foot.style.marginLeft = "40px";
 
         var fieldset = doc.getElementById("gbqff");
         fieldset.style.width = "300px";
-        /*
-        var button = doc.createElement("button");
-        button.id = "leftSlideButton";
-        button.style.position = "absolute";
-        button.style.top = (document.body.scrollHeight/2) + "px";
-        console.log("width = " + searchResultsFrame.width);
-        button.style.left = (searchResultsFrame.width - 30) + "px";
-        // button.style.left = "300px";
-        button.innerHTML = "←";
-        button.addEventListener("click", function(e) {
-          clickSlideLeftButton(e);
-          doc.body.removeChild(button);
-        }, false);
-        doc.body.appendChild(button);
-        */
     },
 
     setReturnMWLink: function() {
