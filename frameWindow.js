@@ -1,8 +1,5 @@
 var fw = {
 
-    numOfChanged: 0,
-    NUM_OF_LINK: 10,
-
     initFrameWindow: function() {
         var div = document.createElement("div");
         div.style.display = "none";
@@ -34,54 +31,18 @@ var fw = {
         return frame.contentDocument;
     },
 
-    changeContent: function(url) {
+    changeFrameSrc: function(url) {
         var frame = document.getElementById("searchResultsFrame");
         frame.src = url;
-    },
-
-    observerCallback: function(mutations) {
-
-        //console.log(fw.getDocument().getElementsByClassName("g").length);
-        for (var i = 0, l = mutations.length; i < l; i++) {
-            var mutation = mutations[i];
-            if (mutation.addedNodes) {
-                for (var j = 0, l2 = mutation.addedNodes.length; j < l2; j++) {
-                    var node = mutation.addedNodes[j];
-                    if (node instanceof HTMLLIElement) {
-                        fw.numOfChanged++;
-                        // 10個以上の検索結果が1つのページに表示された場合に調整
-                        var numOfSearchResults = fw.getDocument().getElementsByClassName("g").length;
-                        numOfSearchResults = (fw.NUM_OF_LINK > numOfSearchResults) ? fw.NUM_OF_LINK : numOfSearchResults;
-                        if (fw.numOfChanged == numOfSearchResults) {
-                            fw.domChanged();
-                        }
-                    }
-                }
-            }
-        }
-    },
-
-    observeDocument: function() {
-
-        var observer = new WebKitMutationObserver(fw.observerCallback);
-
-        var observerConfig = {
-            attributes: false,
-            childList: true,
-            characterData: true,
-            subtree: true
-        };
-
-        observer.observe(fw.getDocument(), observerConfig);
     },
 
     domChanged: function() {
 
         console.log("frameWindow: domChanged");
 
-        fw.numOfChanged = 0;
+        numOfChanged = 0;
         fw.adjustGooglePage();
-        setSplitLink(fw.getDocument());
+        ssObj.setSplitLink(fw.getDocument());
         fw.setReturnMWLink();
     },
 
@@ -129,16 +90,11 @@ var fw = {
                 var linkUrl = evt.srcElement.href;
                 console.log(linkUrl);
 
-                hideFrameWindow();
+                // frameWindowを非表示に
+                var framesetDiv = document.getElementById("framesetDiv");
+                framesetDiv.style.display = "none";
                 location.href = linkUrl;
-                //showMainWindow();
             }); 
         }
     },
 };
-
-/*
-setInterval(function() {
-    console.log(fw);
-}, 5000);
-*/
