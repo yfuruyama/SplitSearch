@@ -1,48 +1,56 @@
-var mw = {
+/*
+ * mainWindow.js
+ */
 
-    isShowd: function() {
-       var framesetDiv = document.getElementById("framesetDiv");
-       return (framesetDiv.style.display == "none");
+var MainWindow = function() {
+    CommonWindow.apply(this);
+    this.init.apply(this);
+}
+
+MainWindow.prototype = {
+
+    // Constructor
+    init: function() {
+        this.doc = window.document;
     },
 
-    getDocument: function() {
-        return window.document;
+    isShowed: function() {
+        return (ss.frameWindow.framesetDiv.style.display == "none");
     },
 
-    splitWindow: function() {
-        // スクロール
+    showFrameWindow: function() {
+
+        if (!ss.frameWindow.doc) {
+            ss.frameWindow.doc = ss.frameWindow.searchFrame.contentDocument;
+        }
+
+        // scroll in page (can't get contentWindow of frame element from extension)
         var scrollTop = document.body.scrollTop;
-        // extension側からframe要素のcontentWindowを取得できなかったので、ページ側でスクロールさせる
-        var scrollScript = "var searchResultsFrame = document.getElementById('searchResultsFrame');" + 
-                           "searchResultsFrame.contentWindow.scrollTo(0," + scrollTop + ");";
-        ssObj.injectScript(scrollScript);
+        var scrollScript = "var searchFrame = document.getElementById('searchFrame');" + 
+                           "searchFrame.contentWindow.scrollTo(0," + scrollTop + ");";
+        ss.injectScript(scrollScript);
         
-        var frameDoc = fw.getDocument();
-
-        // mainWindowを非表示
+        // hide mainWindow
         for (var i = 0; i < document.body.childNodes.length; i++) {
             if (document.body.childNodes[i].style) {
                 document.body.childNodes[i].style.display = "none";
             }
         }
 
-        // frameWindowを表示
-        var framesetDiv = document.getElementById("framesetDiv");
-        console.log(framesetDiv);
+        // show frameWindow
+        var fw = ss.frameWindow;
+        var framesetDiv = fw.framesetDiv;
         framesetDiv.style.display = "block";
         
         fw.adjustGooglePage();
-        ssObj.setSplitLink(fw.getDocument());
-        ssObj.observeDocument();
-
-        fw.setReturnMWLink();
+        fw.setSplitLink();
+        fw.observeDocument();
+        fw.setMainWindowLink();
     },
-    
-    domChanged: function() {
-        numOfChanged = 0;
-        console.log("mainWindow: domChanged");
 
-        ssObj.setSplitLink(mw.getDocument());
-        fw.changeFrameSrc(location.href);
+    domChanged: function() {
+        this.numOfLinksChanged = 0;
+        this.setSplitLink();
+        ss.frameWindow.changeFrameSrc(location.href);
     },
 };
