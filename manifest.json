@@ -1,16 +1,18 @@
 {
   // "manifest_version": 2,
   "name": "Split Search",
-  "version": "1.0",
-  "description": "Splittttt.",
+  "version": "0.9",
+  "description": "make your google search more convenience.",
   "background": {
     "scripts": ["background.js"]
   },
   "content_scripts": [
     {
       "matches": [
+        "http://www.google.co.jp/*",
         "https://www.google.co.jp/*",
-        "http://www.google.co.jp/*"
+        "http://www.google.com/*",
+        "https://www.google.com/*"
       ],
       "js": ["commonWindow.js", "mainWindow.js", "frameWindow.js", "contentscript.js"], //, "injectedscript.js"],
       "run_at": "document_idle",
