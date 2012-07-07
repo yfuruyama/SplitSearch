@@ -64,10 +64,12 @@ FrameWindow.prototype = {
     },
 
     domChanged: function() {
+        console.log('frameWindow domChanged');
         this.numOfLinksChanged = 0;
         this.adjustGooglePage();
         this.setSplitLink();
         this.setMainWindowLink();
+        this.injectLoadCheckScript();
     },
 
     setMainWindowLink: function() {
@@ -76,6 +78,13 @@ FrameWindow.prototype = {
         for (var i = 0; i < links.length; i++) {
             var link = links[i].lastChild;
             link.addEventListener("click", function(evt) {
+                
+                // Mac Command Key => metaKey
+                if (evt.altKey || evt.ctrlKey || evt.metaKey || evt.shiftKey) {
+                    console.log(evt);
+                    return;
+                }
+
                 // hide frameWindow
                 var framesetDiv = ss.frameWindow.searchFrame.parentElement;
                 framesetDiv.style.display = "none";
@@ -85,4 +94,23 @@ FrameWindow.prototype = {
             }); 
         }
     },
+
+    // for non instant search user
+    injectLoadCheckScript: function() {
+        var loadCheckScript = "var searchFrame = document.getElementById('searchFrame');" +
+                              "searchFrame.contentWindow.onbeforeunload = function() {" +
+                                  "var loadCheckTimer;" +
+                                  "loadCheckTimer = setInterval(function() {" +
+                                      "if (searchFrame.contentDocument.readyState == 'complete') {" +
+                                          "clearInterval(loadCheckTimer);" +
+
+                                          // message from page to content scripts
+                                          "var div = document.createElement('div');" +
+                                          "div.id = 'loadCheckDiv';" +
+                                          "document.body.appendChild(div);" +
+                                      "}" +
+                                  "}, 100);" + 
+                              "};";
+        ss.injectScript(loadCheckScript);
+    }
 };

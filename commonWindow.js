@@ -67,6 +67,11 @@ var CommonWindow = function() {
                         if (windowObj.numOfLinksChanged == numOfSearchResults) {
                             windowObj.domChanged();
                         }
+                    } else if (node.id == "loadCheckDiv") {
+                        console.log("loadCheckDiv created", windowObj);
+
+                        ss.frameWindow.doc = ss.frameWindow.searchFrame.contentDocument;
+                        ss.frameWindow.domChanged();
                     }
                 }
             }

@@ -24,10 +24,12 @@ MainWindow.prototype = {
             ss.frameWindow.doc = ss.frameWindow.searchFrame.contentDocument;
         }
 
+        console.log(ss.frameWindow);
+
         // scroll in page (can't get contentWindow of frame element from extension)
         var scrollTop = document.body.scrollTop;
         var scrollScript = "var searchFrame = document.getElementById('searchFrame');" + 
-                           "searchFrame.contentWindow.scrollTo(0," + scrollTop + ");";
+                            "searchFrame.contentWindow.scrollTo(0," + scrollTop + ");";
         ss.injectScript(scrollScript);
         
         // hide mainWindow
@@ -46,6 +48,7 @@ MainWindow.prototype = {
         fw.setSplitLink();
         fw.observeDocument();
         fw.setMainWindowLink();
+        fw.injectLoadCheckScript();
     },
 
     domChanged: function() {

@@ -7,9 +7,8 @@
 /*==========*/
 
 function insertSplitLink() {
-    console.log("hello inject");
 }
-
+insertSplitLink();
 
 function changeFrameContent() {
     console.log("changeFrame");

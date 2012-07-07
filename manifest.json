@@ -12,8 +12,9 @@
         "https://www.google.co.jp/*",
         "http://www.google.co.jp/*"
       ],
-      "js": ["commonWindow.js", "mainWindow.js", "frameWindow.js", "contentscript.js", "injectedscript.js"],
-      "run_at": "document_idle"
+      "js": ["commonWindow.js", "mainWindow.js", "frameWindow.js", "contentscript.js"], //, "injectedscript.js"],
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ],
   "permissions": [

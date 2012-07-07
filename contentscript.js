@@ -10,6 +10,8 @@ SplitSearch.prototype = {
 
     // Constructor
     init: function() {
+        console.log('SplitSearch init');
+
         this.mainWindow = new MainWindow();
         this.frameWindow = new FrameWindow();
     },
