@@ -71,6 +71,11 @@ var CommonWindow = function() {
                         console.log("loadCheckDiv created", windowObj);
 
                         ss.frameWindow.doc = ss.frameWindow.searchFrame.contentDocument;
+
+                        if (ss.frameWindow.doc.getElementsByClassName("splitLink").length > 0) {
+                            // 既にsplitLinkとか表示されている
+                            return;
+                        }
                         ss.frameWindow.domChanged();
                     }
                 }
